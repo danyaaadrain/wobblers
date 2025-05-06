@@ -12,7 +12,18 @@ class Wobbler {
 protected:
     const wstring Attach = L"Зацепили леску к вобблеру";
     const wstring Throw = L"Закинули вобблер в воду";
+    const wstring RetrieveFish = L"Плавно вываживаем рыбу";
     const wstring Take = L"Вытянули спиннинг с вобблером из воды и сняли рыбу";
+    virtual void PrepareLine() {
+        wcout << L"Шаг 1 - " << Attach << endl;
+    }
+    virtual void Cast() {
+        wcout << L"Шаг 2 - " << Throw << endl;
+    }
+    virtual void Retrieve();
+    virtual void RemoveFish() {
+        wcout << L"Шаг 4 - " << Take << endl;
+    }
 private:
     int Weight;
     int Length;
@@ -32,7 +43,12 @@ public:
     void getInfo() {
         wcout << L"Тип вобблера - " << WobblerType << L", тип плавучести - " << BuoyancyType << endl;
     }
-
+    void CatchFish() {
+        PrepareLine();
+        Cast();
+        Retrieve();
+        RemoveFish();
+    }
     void ApplyStrategy();
 };
 
@@ -52,100 +68,72 @@ public:
 class AggressiveStrategy : public FishingStrategy {
 public:
     void Apply(Wobbler* wobbler) override {
-        wcout << L"Убираем вобблер " << wobbler->GetWobblerType() << L" подальше и глушим рыбу бомбочками" << endl;
+        wcout << L"Шаг 3 (стратегия) - Убираем вобблер " << wobbler->GetWobblerType() << L" подальше и глушим рыбу бомбочками" << endl;
     }
 };
 
 class CautiousStrategy : public FishingStrategy {
 public:
     void Apply(Wobbler* wobbler) override {
-        wcout << L"Медленно подтягиваем вобблер " << wobbler->GetWobblerType() << endl;
+        wcout << L"Шаг 3 (стратегия) - Медленно подтягиваем вобблер " << wobbler->GetWobblerType() << endl;
     }
 };
-void Wobbler::ApplyStrategy() {
-    if (strategy)
-        strategy->Apply(this);
-}
 
+void Wobbler::Retrieve() {
+    if (strategy) {
+        strategy->Apply(this);
+    }
+}
 
 
 class NoriesPelican : public Wobbler {
 public:
-    NoriesPelican(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy);
-    ~NoriesPelican();
-    void AttachLine();
-    void ThrowWobbler();
-    void TakeFish();
+    NoriesPelican(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
+        : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
+        wcout << L"Достали упаковку вобблеров Nories Pelican" << endl;
+    }
+    ~NoriesPelican() {
+        wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
+    }
+    void AttachLine() override { wcout << Attach << endl; }
+    void ThrowWobbler() override { wcout << Throw << endl; }
+    void TakeFish() override { wcout << Take << endl; }
 };
-
-NoriesPelican::NoriesPelican(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
-    : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
-    wcout << L"Достали упаковку вобблеров Nories Pelican" << endl;
-}
-NoriesPelican::~NoriesPelican() {
-    wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
-}
-void NoriesPelican::AttachLine() {
-    wcout << Attach << endl;
-}
-void NoriesPelican::ThrowWobbler() {
-    wcout << Throw << endl;
-}
-void NoriesPelican::TakeFish() {
-    wcout << Take << endl;
-}
 
 class HMKLShad : public Wobbler {
 public:
-    HMKLShad(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy);
-    ~HMKLShad();
-    void AttachLine();
-    void ThrowWobbler();
-    void TakeFish();
+    HMKLShad(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
+        : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
+        wcout << L"Достали упаковку вобблеров HMKL Shad" << endl;
+    }
+    ~HMKLShad() {
+        wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
+    }
+    void AttachLine() override { wcout << Attach << endl; }
+    void ThrowWobbler() override { wcout << Throw << endl; }
+    void TakeFish() override { wcout << Take << endl; }
 };
-
-HMKLShad::HMKLShad(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
-    : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
-    wcout << L"Достали упаковку вобблеров HMKL Shad" << endl;
-}
-HMKLShad::~HMKLShad() {
-    wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
-}
-void HMKLShad::AttachLine() {
-    wcout << Attach << endl;
-}
-void HMKLShad::ThrowWobbler() {
-    wcout << Throw << endl;
-}
-void HMKLShad::TakeFish() {
-    wcout << Take << endl;
-}
 
 class ValkeINJuJu : public Wobbler {
 public:
-    ValkeINJuJu(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy);
-    ~ValkeINJuJu();
-    void AttachLine();
-    void ThrowWobbler();
-    void TakeFish();
-};
+    ValkeINJuJu(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
+        : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
+        wcout << L"Достали упаковку вобблеров ValkeIN JuJu" << endl;
+    }
+    ~ValkeINJuJu() {
+        wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
+    }
+    void AttachLine() override { wcout << Attach << endl; }
+    void ThrowWobbler() override { wcout << Throw << endl; }
+    void TakeFish() override { wcout << Take << endl; }
+    void Cast() override {
+        wcout << L"Шаг 2 (после переопределения) - При закидывании зацепили вобблер за одежду" << endl;
+    }
 
-ValkeINJuJu::ValkeINJuJu(int Weight, int Length, wstring BuoyancyType, wstring WobblerType, FishingStrategy* strategy)
-    : Wobbler(Weight, Length, BuoyancyType, WobblerType, strategy) {
-    wcout << L"Достали упаковку вобблеров ValkeIN JuJu" << endl;
-}
-ValkeINJuJu::~ValkeINJuJu() {
-    wcout << L"Убрали упаковку с вобблерами в чемодан" << endl;
-}
-void ValkeINJuJu::AttachLine() {
-    wcout << Attach << endl;
-}
-void ValkeINJuJu::ThrowWobbler() {
-    wcout << Throw << endl;
-}
-void ValkeINJuJu::TakeFish() {
-    wcout << Take << endl;
-}
+    void Retrieve() override {
+        wcout << L"Шаг 3 (после переопределения) - Медленно, с паузами подтягиваем" << endl;
+    }
+};
 
 enum class WobblerList : int {
     NoriesPelican = 1,
@@ -243,10 +231,11 @@ int main() {
     wcout << L"Все вобблеры в массиве:" << endl;
     WobblerActions(wobblerArray.GetIterator());
 
-    wcout << L"\nПрименяем стратегию ловли:" << endl;
+    wcout << L"Шаблонный метод:" << endl;
     for (wobblerIt->First(); !wobblerIt->IsDone(); wobblerIt->Next()) {
         Wobbler* w = wobblerIt->GetCurrent();
-        w->ApplyStrategy();
+        wcout << L"\n[Ловля на " << w->GetWobblerType() << L"]" << endl;
+        w->CatchFish();
     }
 
     delete strat1;
